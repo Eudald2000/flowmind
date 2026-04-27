@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "description": "Live, version-specific docs for Next.js, Supabase, Anthropic SDK, Tailwind, etc. Prevents Claude from using outdated APIs."
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn@canary", "registry", "mcp"],
+      "description": "Official shadcn/ui component registry. Search, browse and install components via natural language."
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "description": "GitHub integration: PRs, issues, branches, commits — without leaving Claude Code."
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "description": "Browser automation for E2E testing and UI validation. Claude can open, click, screenshot and assert."
+    }
+  }
+}
