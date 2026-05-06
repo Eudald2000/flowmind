@@ -61,3 +61,13 @@ next-env.d.ts
 .eslintcache
 .cache/
 *.pem
+
+# Claude Code local settings (personal, not project-wide)
+.claude/settings.local.json
+
+# Playwright MCP snapshots
+.playwright-mcp/
+
+# Python cache (UI/UX skill scripts)
+**/__pycache__/
+**/*.pyc

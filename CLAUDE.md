@@ -862,4 +862,4 @@ Never use `execute_sql` for schema changes — always migrations.
 
 ---
 
-*Last updated: 2026-04-27 — Eudald Comas*
+*Last updated: 2026-04-27 — Eudald Bosch*
