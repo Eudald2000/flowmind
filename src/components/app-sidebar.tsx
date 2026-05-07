@@ -9,6 +9,7 @@ import {
   Settings,
   LogOut,
   ChevronsUpDown,
+  ChevronRight,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -40,12 +41,16 @@ interface AppSidebarProps {
     displayName: string
     avatarUrl: string | null
   }
+  workspace: {
+    id: string
+    name: string
+    slug: string
+  }
+  projects: {
+    id: string
+    name: string
+  }[]
 }
-
-const NAV_ITEMS = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/projects', label: 'Proyectos', icon: FolderOpen },
-]
 
 function getInitials(name: string) {
   return name
@@ -56,13 +61,13 @@ function getInitials(name: string) {
     .toUpperCase()
 }
 
-export function AppSidebar({ user }: AppSidebarProps) {
+export function AppSidebar({ user, workspace, projects }: AppSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
 
   return (
     <Sidebar collapsible="icon" className="border-r border-[#E4E4E7] bg-white">
-      {/* Header — logo */}
+      {/* Header — logo + workspace name */}
       <SidebarHeader className="border-b border-[#E4E4E7] px-4 py-4">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -73,40 +78,76 @@ export function AppSidebar({ user }: AppSidebarProps) {
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#18181B]">
                 <BrainCircuit className="h-4 w-4 text-white" />
               </div>
-              <span className="text-sm font-semibold text-[#09090B] tracking-tight">
-                FlowMind
-              </span>
+              <div className="flex flex-col leading-tight">
+                <span className="text-sm font-semibold text-[#09090B] tracking-tight">
+                  FlowMind
+                </span>
+                <span className="text-[10px] text-[#71717A] truncate max-w-28">
+                  {workspace.name}
+                </span>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
-      {/* Navigation */}
       <SidebarContent className="px-2 py-3">
+        {/* Main nav */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-[10px] font-medium uppercase tracking-widest text-[#A1A1AA] px-2 mb-1">
             Navegación
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
-                <SidebarMenuItem key={href}>
-                  <SidebarMenuButton
-                    render={<Link href={href} />}
-                    isActive={
-                      pathname === href ||
-                      (href !== '/dashboard' && pathname.startsWith(href))
-                    }
-                    className="cursor-pointer rounded-lg text-sm font-medium text-[#3F3F46] transition-colors hover:bg-[#F4F4F5] hover:text-[#09090B] data-[active=true]:bg-[#F4F4F5] data-[active=true]:text-[#09090B]"
-                  >
-                    <Icon className="h-4 w-4 shrink-0" />
-                    <span>{label}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  render={<Link href="/dashboard" />}
+                  isActive={pathname === '/dashboard'}
+                  className="cursor-pointer rounded-lg text-sm font-medium text-[#3F3F46] transition-colors hover:bg-[#F4F4F5] hover:text-[#09090B] data-[active=true]:bg-[#F4F4F5] data-[active=true]:text-[#09090B]"
+                >
+                  <LayoutDashboard className="h-4 w-4 shrink-0" />
+                  <span>Dashboard</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  render={<Link href={`/workspace/${workspace.slug}`} />}
+                  isActive={pathname === `/workspace/${workspace.slug}`}
+                  className="cursor-pointer rounded-lg text-sm font-medium text-[#3F3F46] transition-colors hover:bg-[#F4F4F5] hover:text-[#09090B] data-[active=true]:bg-[#F4F4F5] data-[active=true]:text-[#09090B]"
+                >
+                  <FolderOpen className="h-4 w-4 shrink-0" />
+                  <span>Proyectos</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Projects list */}
+        {projects.length > 0 && (
+          <SidebarGroup className="mt-2">
+            <SidebarGroupLabel className="text-[10px] font-medium uppercase tracking-widest text-[#A1A1AA] px-2 mb-1">
+              Recientes
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {projects.map((project) => (
+                  <SidebarMenuItem key={project.id}>
+                    <SidebarMenuButton
+                      render={<Link href={`/project/${project.id}`} />}
+                      isActive={pathname === `/project/${project.id}`}
+                      className="cursor-pointer rounded-lg text-sm text-[#3F3F46] transition-colors hover:bg-[#F4F4F5] hover:text-[#09090B] data-[active=true]:bg-[#F4F4F5] data-[active=true]:text-[#09090B]"
+                    >
+                      <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#A1A1AA]" />
+                      <span className="truncate">{project.name}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       {/* Footer — user menu */}
@@ -146,7 +187,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
               >
                 <DropdownMenuItem
                   className="cursor-pointer gap-2 text-[#3F3F46] focus:bg-[#F4F4F5] focus:text-[#09090B]"
-                  onClick={() => router.push('/dashboard/settings')}
+                  onClick={() => router.push('/settings')}
                 >
                   <Settings className="h-3.5 w-3.5" />
                   Configuración
