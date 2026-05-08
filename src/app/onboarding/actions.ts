@@ -30,17 +30,21 @@ export async function createWorkspace(
     .single()
 
   if (error) {
+    console.error('[createWorkspace] Supabase error:', error.message, '| code:', error.code, '| details:', error.details, '| hint:', error.hint)
     if (error.code === '23505') return { error: 'Ese slug ya está en uso, elige otro' }
     return { error: 'Error al crear el workspace' }
   }
 
   // Bootstrap: add owner as member using admin client (RLS chicken-and-egg)
   const admin = await createAdminClient()
-  await admin.from('workspace_members').insert({
+  const { error: memberError } = await admin.from('workspace_members').insert({
     workspace_id: workspace.id,
     user_id: user.id,
     role: 'owner',
   })
+  if (memberError) {
+    console.error('[createWorkspace] workspace_members insert error:', memberError.message, '| code:', memberError.code, '| details:', memberError.details)
+  }
 
   redirect(`/workspace/${workspace.slug}`)
 }

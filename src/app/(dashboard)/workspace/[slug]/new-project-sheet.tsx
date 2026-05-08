@@ -25,6 +25,8 @@ export function NewProjectSheet({ workspaceId, workspaceSlug }: Props) {
   const [state, action, pending] = useActionState(createProject, null)
 
   useEffect(() => {
+    // Close sheet after successful server action — valid external state sync
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (state && 'success' in state) setOpen(false)
   }, [state])
 

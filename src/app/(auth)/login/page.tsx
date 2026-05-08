@@ -19,7 +19,7 @@ export default function LoginPage({
         <div className="space-y-4">
           <blockquote className="space-y-3">
             <p className="text-2xl font-medium leading-snug text-white">
-              "Gestiona proyectos con la velocidad del pensamiento. Tu equipo y tu IA, en perfecta sincronía."
+              &ldquo;Gestiona proyectos con la velocidad del pensamiento. Tu equipo y tu IA, en perfecta sincronía.&rdquo;
             </p>
           </blockquote>
           <div className="flex items-center gap-3">
