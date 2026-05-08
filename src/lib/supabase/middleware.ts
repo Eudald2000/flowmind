@@ -27,7 +27,16 @@ export async function updateSession(request: NextRequest) {
   )
 
   // Refresh session — do not remove this await
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+  // Stale cookies from a deleted/expired session — clear them and redirect to login
+  if (authError && (authError as { code?: string }).code === 'refresh_token_not_found') {
+    const response = NextResponse.redirect(new URL('/login', request.url))
+    request.cookies.getAll()
+      .filter(c => c.name.startsWith('sb-'))
+      .forEach(c => response.cookies.delete(c.name))
+    return response
+  }
 
   const { pathname } = request.nextUrl
 
