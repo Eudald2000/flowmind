@@ -2,6 +2,7 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ChevronRight, ListTodo } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { NewTaskSheet } from './new-task-sheet'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
@@ -78,6 +79,7 @@ export default async function ProjectPage({ params }: Props) {
             <h2 className="text-sm font-medium text-[#09090B]">
               Tareas <span className="ml-1 text-[#71717A] font-normal">({tasks?.length ?? 0})</span>
             </h2>
+            <NewTaskSheet projectId={id} />
           </div>
 
           {!tasks?.length ? (
@@ -87,7 +89,7 @@ export default async function ProjectPage({ params }: Props) {
               </div>
               <p className="mt-3 text-sm font-medium text-[#09090B]">Sin tareas todavía</p>
               <p className="mt-1 text-xs text-[#71717A]">
-                La gestión de tareas llega muy pronto.
+                Crea tu primera tarea con el botón de arriba.
               </p>
             </div>
           ) : (

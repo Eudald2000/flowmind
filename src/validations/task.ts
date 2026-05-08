@@ -7,7 +7,7 @@ export const CreateTaskSchema = z.object({
   status: z.enum(TASK_STATUSES).default('todo'),
   priority: z.enum(TASK_PRIORITIES).default('medium'),
   assignee_id: z.string().uuid().optional(),
-  due_date: z.string().datetime().optional(),
+  due_date: z.string().date().optional(),
   project_id: z.string().uuid(),
 })
 
