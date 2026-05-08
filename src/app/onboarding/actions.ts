@@ -25,7 +25,7 @@ export async function createWorkspace(
 
   // Use admin client for both inserts: user has no membership yet (chicken-and-egg),
   // so RLS on workspaces would block the INSERT. User is already verified above.
-  const admin = await createAdminClient()
+  const admin = createAdminClient()
 
   const { data: workspace, error } = await admin
     .from('workspaces')
