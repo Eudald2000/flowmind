@@ -6,6 +6,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { NewProjectSheet } from './new-project-sheet'
+import { EditProjectSheet } from '@/components/projects/edit-project-sheet'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -25,12 +26,21 @@ export default async function WorkspacePage({ params }: Props) {
 
   if (!workspace) notFound()
 
-  const { data: projects } = await supabase
-    .from('projects')
-    .select('id, name, description, created_at')
-    .eq('workspace_id', workspace.id)
-    .eq('is_active', true)
-    .order('created_at', { ascending: false })
+  const [{ data: projects }, { data: membershipData }] = await Promise.all([
+    supabase
+      .from('projects')
+      .select('id, name, description, created_at')
+      .eq('workspace_id', workspace.id)
+      .eq('is_active', true)
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('workspace_members')
+      .select('role')
+      .eq('workspace_id', workspace.id)
+      .eq('user_id', user.id)
+      .single(),
+  ])
+  const userRole = membershipData?.role ?? 'member'
 
   const projectIds = (projects ?? []).map((p) => p.id)
 
@@ -86,18 +96,29 @@ export default async function WorkspacePage({ params }: Props) {
                 : 0
 
               return (
-                <Link
+                <div
                   key={project.id}
-                  href={`/project/${project.id}`}
-                  className="group flex flex-col rounded-xl border border-[#E4E4E7] bg-white p-5 transition-shadow hover:shadow-sm"
+                  className="group relative flex flex-col rounded-xl border border-[#E4E4E7] bg-white p-5 transition-shadow hover:shadow-sm"
                 >
+                  <Link
+                    href={`/project/${project.id}`}
+                    className="absolute inset-0 rounded-xl"
+                    aria-label={`Abrir ${project.name}`}
+                  />
                   <div className="flex items-start justify-between gap-2">
                     <h2 className="text-sm font-semibold text-[#09090B] group-hover:text-[#18181B] line-clamp-1">
                       {project.name}
                     </h2>
-                    <Badge variant="secondary" className="shrink-0 bg-[#F4F4F5] text-[#71717A] text-[10px]">
-                      {progress}%
-                    </Badge>
+                    <div className="relative z-10 flex items-center gap-1 shrink-0">
+                      <Badge variant="secondary" className="bg-[#F4F4F5] text-[#71717A] text-[10px]">
+                        {progress}%
+                      </Badge>
+                      <EditProjectSheet
+                        project={{ id: project.id, name: project.name, description: project.description ?? null }}
+                        workspaceSlug={workspace.slug}
+                        userRole={userRole}
+                      />
+                    </div>
                   </div>
 
                   {project.description && (
@@ -125,7 +146,7 @@ export default async function WorkspacePage({ params }: Props) {
                       />
                     </div>
                   )}
-                </Link>
+                </div>
               )
             })}
           </div>

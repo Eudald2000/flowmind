@@ -12,19 +12,26 @@ export default async function DashboardLayout({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: profile }, { data: membership }] = await Promise.all([
+  const [{ data: profile }, { data: memberships }] = await Promise.all([
     supabase.from('profiles').select('display_name, avatar_url').eq('id', user.id).single(),
     supabase
       .from('workspace_members')
       .select('workspace_id, role, workspaces(id, name, slug)')
       .eq('user_id', user.id)
-      .limit(1)
-      .maybeSingle(),
+      .order('joined_at', { ascending: true }),
   ])
 
-  if (!membership?.workspaces) redirect('/onboarding')
+  const workspaces = (memberships ?? [])
+    .map((m) => {
+      const ws = m.workspaces as { id: string; name: string; slug: string } | null
+      if (!ws) return null
+      return { ...ws, role: m.role as string }
+    })
+    .filter((w): w is { id: string; name: string; slug: string; role: string } => w !== null)
 
-  const workspace = membership.workspaces as { id: string; name: string; slug: string }
+  if (!workspaces.length) redirect('/onboarding')
+
+  const workspace = workspaces[0]
 
   const { data: projects } = await supabase
     .from('projects')
@@ -44,6 +51,7 @@ export default async function DashboardLayout({
           avatarUrl: profile?.avatar_url ?? null,
         }}
         workspace={workspace}
+        workspaces={workspaces}
         projects={projects ?? []}
       />
       <SidebarInset className="bg-[#FAFAFA]">

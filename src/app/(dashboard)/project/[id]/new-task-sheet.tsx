@@ -13,6 +13,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { toast } from 'sonner'
 import { createTask } from './actions'
 
 const STATUS_OPTIONS = [
@@ -38,9 +39,11 @@ export function NewTaskSheet({ projectId }: Props) {
   const [state, action, pending] = useActionState(createTask, null)
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (state === null && !pending) return
-    if (state === null) setOpen(false)
+    if (state === null) {
+      toast.success('Tarea creada')
+      setOpen(false)
+    }
   }, [state, pending])
 
   return (
