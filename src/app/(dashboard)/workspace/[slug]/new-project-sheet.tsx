@@ -32,7 +32,7 @@ export function NewProjectSheet({ workspaceId, workspaceSlug }: Props) {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger className="inline-flex items-center gap-2 rounded-lg bg-[#18181B] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#27272A]">
+      <SheetTrigger className="inline-flex items-center gap-2 rounded-lg bg-zinc-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-600">
         <Plus className="h-4 w-4" />
         Nuevo proyecto
       </SheetTrigger>
@@ -76,14 +76,14 @@ export function NewProjectSheet({ workspaceId, workspaceSlug }: Props) {
               name="description"
               placeholder="Describe brevemente el proyecto..."
               rows={3}
-              className="w-full rounded-lg border border-[#E4E4E7] bg-white px-3 py-2 text-sm text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:ring-2 focus:ring-[#18181B] resize-none"
+              className="w-full rounded-lg border border-[#E4E4E7] bg-white px-3 py-2 text-sm text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:ring-2 focus:ring-zinc-700 resize-none"
             />
           </div>
 
           <Button
             type="submit"
             disabled={pending}
-            className="mt-2 w-full bg-[#18181B] text-white hover:bg-[#27272A]"
+            className="mt-2 w-full bg-zinc-700 text-white hover:bg-zinc-600"
           >
             {pending ? 'Creando...' : 'Crear proyecto'}
           </Button>

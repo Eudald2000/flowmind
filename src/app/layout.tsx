@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans } from 'next/font/google'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { PostHogProvider } from '@/providers/posthog-provider'
 import './globals.css'
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -23,10 +24,12 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${plusJakartaSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-[#FAFAFA] text-[#09090B]">
-        <TooltipProvider delay={200}>
-          {children}
-        </TooltipProvider>
-        <Toaster position="bottom-right" />
+        <PostHogProvider>
+          <TooltipProvider delay={200}>
+            {children}
+          </TooltipProvider>
+          <Toaster position="bottom-right" />
+        </PostHogProvider>
       </body>
     </html>
   )
