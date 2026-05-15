@@ -9,6 +9,7 @@ import { EditProjectSheet } from '@/components/projects/edit-project-sheet'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
+import { AgentChat } from './agent-chat'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -152,6 +153,8 @@ export default async function ProjectPage({ params, searchParams }: Props) {
           )}
         </div>
       </main>
+
+      <AgentChat projectId={id} />
     </div>
   )
 }
